@@ -1,5 +1,8 @@
 # swift-url-form-coding
 
+[![CI](https://github.com/coenttb/swift-url-form-coding/workflows/CI/badge.svg)](https://github.com/coenttb/swift-url-form-coding/actions/workflows/ci.yml)
+![Development Status](https://img.shields.io/badge/status-active--development-blue.svg)
+
 A Swift package for encoding and decoding `application/x-www-form-urlencoded` data with Codable support.
 
 ## Overview
