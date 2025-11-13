@@ -6,6 +6,8 @@ extension String {
     static let urlFormCoding: Self = "URLFormCoding"
 }
 
+extension String { var tests: Self { self + " Tests" } }
+
 extension Target.Dependency {
     static var urlFormCoding: Self { .target(name: .urlFormCoding) }
     static var rfc2388: Self { .product(name: "RFC 2388", package: "swift-rfc-2388") }
@@ -57,10 +59,17 @@ let package = Package(
     ]
 )
 
+for target in package.targets {
+    target.swiftSettings?.append(
+        contentsOf: [
+            .enableUpcomingFeature("MemberImportVisibility")
+        ]
+    )
+}
+
 //package.traits.insert(
 //    .default(
 //        enabledTraits: ["URLRouting"]
 //    )
 //)
 
-extension String { var tests: Self { self + " Tests" } }
