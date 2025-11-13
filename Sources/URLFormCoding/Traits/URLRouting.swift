@@ -1,7 +1,6 @@
 #if URLRouting
 import Foundation
-@_exported import URLRouting
-
+import URLRouting
 // MARK: - Form.Conversion
 
 /// A conversion that handles URL form data encoding and decoding for URLRouting.
