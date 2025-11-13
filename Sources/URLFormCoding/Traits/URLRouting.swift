@@ -41,7 +41,7 @@ import URLRouting
 /// ```swift
 /// // Custom decoder for nested data
 /// let decoder = Form.Decoder()
-/// decoder.parsingStrategy = .brackets  // Supports user[name]=value
+/// decoder.arrayParsingStrategy = .brackets  // Supports user[name]=value
 /// decoder.dateDecodingStrategy = .iso8601
 ///
 /// // Custom encoder for response data
@@ -101,11 +101,11 @@ extension Form {
         ///
         /// ```swift
         /// let decoder = Form.Decoder()
-        /// decoder.parsingStrategy = .brackets
+        /// decoder.arrayParsingStrategy = .brackets
         /// decoder.dateDecodingStrategy = .secondsSince1970
         ///
         /// let encoder = Form.Encoder()
-        /// encoder.arrayEncodingStrategy = .indexedBrackets
+        /// encoder.arrayEncodingStrategy = .bracketsWithIndices
         /// encoder.dateEncodingStrategy = .secondsSince1970
         ///
         /// let formCoding = Form.Conversion(
@@ -215,7 +215,7 @@ extension URLRouting.Conversion {
     ///
     /// // Create conversion with custom configuration
     /// let decoder = Form.Decoder()
-    /// decoder.parsingStrategy = .brackets
+    /// decoder.arrayParsingStrategy = .brackets
     /// let encoder = Form.Encoder()
     /// encoder.dateEncodingStrategy = .iso8601
     ///

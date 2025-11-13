@@ -47,7 +47,7 @@ import RFC_2388
 /// let encoder = Form.Encoder()
 /// encoder.dateEncodingStrategy = .iso8601
 /// encoder.dataEncodingStrategy = .base64
-/// encoder.encodingStrategy = .brackets // For PHP/Rails compatibility
+/// encoder.arrayEncodingStrategy = .brackets // For PHP/Rails compatibility
 /// ```
 ///
 /// ## Advanced Features

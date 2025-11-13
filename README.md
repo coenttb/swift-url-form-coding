@@ -10,10 +10,10 @@ A Swift package for encoding and decoding `application/x-www-form-urlencoded` da
 
 - ✅ **Codable Integration**: Seamlessly encode/decode Swift types to/from form data
 - ✅ **Multiple Encoding Strategies**: Support for PHP-style brackets, indexed arrays, and more
-- ✅ **URLRouting Integration**: First-class support for PointFree's URLRouting
+- ✅ **URLRouting Integration**: Optional integration via SPM traits with PointFree's URLRouting
 - ✅ **RFC Compliant**: Built on [RFC 2388](https://datatracker.ietf.org/doc/html/rfc2388) and [WHATWG URL Encoding](https://url.spec.whatwg.org/)
 - ✅ **Swift 6.0**: Full strict concurrency support
-- ✅ **Comprehensive Tests**: 218 tests covering edge cases and round-trip conversions
+- ✅ **Comprehensive Tests**: 158+ tests covering edge cases and round-trip conversions
 
 ## Installation
 
@@ -35,6 +35,14 @@ Then add the product to your target:
     ]
 )
 ```
+
+## Supported Platforms
+
+- macOS 14.0+
+- iOS 17.0+
+- tvOS 17.0+
+- watchOS 10.0+
+- Swift 6.1+
 
 ## Quick Start
 
