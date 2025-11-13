@@ -1,17 +1,12 @@
-//
-//  File.swift
-//  swift-url-form-coding-url-routing
-//
-//  Created by Coen ten Thije Boonkkamp on 26/07/2025.
-//
-
+#if URLRouting
 import Foundation
-import URLFormCoding
-import URLRouting
+@_exported import URLRouting
+
+// MARK: - Form.Conversion
 
 /// A conversion that handles URL form data encoding and decoding for URLRouting.
 ///
-/// `FormCoding` provides seamless conversion between Swift Codable types and
+/// `Form.Conversion` provides seamless conversion between Swift Codable types and
 /// URL-encoded form data (application/x-www-form-urlencoded format). It's the
 /// standard format used by HTML forms and many web APIs.
 ///
@@ -32,7 +27,7 @@ import URLRouting
 /// }
 ///
 /// // Create form conversion
-/// let formConversion = FormCoding(ContactForm.self)
+/// let formConversion = Form.Conversion(ContactForm.self)
 ///
 /// // Use in route definition
 /// Route {
@@ -55,7 +50,7 @@ import URLRouting
 /// encoder.dateEncodingStrategy = .iso8601
 /// encoder.arrayEncodingStrategy = .brackets
 ///
-/// let advancedForm = FormCoding(
+/// let advancedForm = Form.Conversion(
 ///     ContactForm.self,
 ///     decoder: decoder,
 ///     encoder: encoder
@@ -114,7 +109,7 @@ extension Form {
         /// encoder.arrayEncodingStrategy = .indexedBrackets
         /// encoder.dateEncodingStrategy = .secondsSince1970
         ///
-        /// let formCoding = FormCoding(
+        /// let formCoding = Form.Conversion(
         ///     MyModel.self,
         ///     decoder: decoder,
         ///     encoder: encoder
@@ -192,3 +187,91 @@ extension Form.Conversion: URLRouting.Conversion {
         try encoder.encode(output)
     }
 }
+
+// MARK: - URLRouting.Conversion Extensions
+
+extension URLRouting.Conversion {
+    /// Creates a URL form data conversion for the specified Codable type.
+    ///
+    /// This static method provides a convenient way to create ``Form.Conversion``
+    /// instances for use in URLRouting route definitions. Form coding handles
+    /// standard web form data (application/x-www-form-urlencoded).
+    ///
+    /// - Parameters:
+    ///   - type: The Codable type to convert to/from form data
+    ///   - decoder: Optional custom URL form decoder (uses default if not provided)
+    ///   - encoder: Optional custom URL form encoder (uses default if not provided)
+    /// - Returns: A ``Form.Conversion`` instance
+    ///
+    /// ## Example
+    ///
+    /// ```swift
+    /// struct LoginRequest: Codable {
+    ///     let username: String
+    ///     let password: String
+    /// }
+    ///
+    /// // Create conversion with default encoder/decoder
+    /// let loginConversion = Conversion.form(LoginRequest.self)
+    ///
+    /// // Create conversion with custom configuration
+    /// let decoder = Form.Decoder()
+    /// decoder.parsingStrategy = .brackets
+    /// let encoder = Form.Encoder()
+    /// encoder.dateEncodingStrategy = .iso8601
+    ///
+    /// let customConversion = Conversion.form(
+    ///     LoginRequest.self,
+    ///     decoder: decoder,
+    ///     encoder: encoder
+    /// )
+    /// ```
+    ///
+    /// ## Usage in Routes
+    ///
+    /// ```swift
+    /// Route {
+    ///     Method.post
+    ///     Path { "login" }
+    ///     Body(.form(LoginRequest.self))
+    /// }
+    /// ```
+    public static func form<Value>(
+        _ type: Value.Type,
+        decoder: Form.Decoder = .init(),
+        encoder: Form.Encoder = .init()
+    ) -> Self where Self == Form.Conversion<Value> {
+        .init(type, decoder: decoder, encoder: encoder)
+    }
+
+    /// Maps this conversion through a URL form data conversion.
+    ///
+    /// This method allows you to chain conversions, applying form data
+    /// conversion after another conversion has been applied.
+    ///
+    /// - Parameters:
+    ///   - type: The Codable type to convert to/from form data
+    ///   - decoder: Optional custom URL form decoder (uses default if not provided)
+    ///   - encoder: Optional custom URL form encoder (uses default if not provided)
+    /// - Returns: A mapped conversion that applies both conversions in sequence
+    ///
+    /// ## Example
+    ///
+    /// ```swift
+    /// struct APIRequest: Codable {
+    ///     let data: UserProfile
+    /// }
+    ///
+    /// // Chain conversions: first transform data, then apply form conversion
+    /// let chainedConversion = Conversion<Data, Data>.identity
+    ///     .form(UserProfile.self)
+    /// ```
+    public func form<Value>(
+        _ type: Value.Type,
+        decoder: Form.Decoder = .init(),
+        encoder: Form.Encoder = .init()
+    ) -> Conversions.Map<Self, Form.Conversion<Value>> {
+        self.map(.form(type, decoder: decoder, encoder: encoder))
+    }
+}
+#endif

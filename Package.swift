@@ -4,12 +4,10 @@ import PackageDescription
 
 extension String {
     static let urlFormCoding: Self = "URLFormCoding"
-    static let urlFormCodingURLRouting: Self = "URLFormCodingURLRouting"
 }
 
 extension Target.Dependency {
     static var urlFormCoding: Self { .target(name: .urlFormCoding) }
-    static var urlFormCodingURLRouting: Self { .target(name: .urlFormCodingURLRouting) }
     static var rfc2388: Self { .product(name: "RFC 2388", package: "swift-rfc-2388") }
     static var whatwgUrlEncoding: Self { .product(name: "WHATWG URL Encoding", package: "swift-whatwg-url-encoding") }
     static var urlRouting: Self { .product(name: "URLRouting", package: "swift-url-routing") }
@@ -24,11 +22,16 @@ let package = Package(
         .watchOS(.v10)
     ],
     products: [
-        .library(name: .urlFormCoding, targets: [.urlFormCoding]),
-        .library(name: .urlFormCodingURLRouting, targets: [.urlFormCodingURLRouting])
+        .library(name: .urlFormCoding, targets: [.urlFormCoding])
+    ],
+    traits: [
+        .trait(
+            name: "URLRouting",
+            description: "URLRouting integration for URLFormCoding"
+        )
     ],
     dependencies: [
-        .package(path: "../../swift-standards/swift-rfc-2388"),
+        .package(url: "https://github.com/swift-standards/swift-rfc-2388", from: "0.1.0"),
         .package(url: "https://github.com/swift-standards/swift-whatwg-url-encoding.git", from: "0.1.0"),
         .package(url: "https://github.com/pointfreeco/swift-url-routing", from: "0.6.0")
     ],
@@ -37,7 +40,12 @@ let package = Package(
             name: .urlFormCoding,
             dependencies: [
                 .rfc2388,
-                .whatwgUrlEncoding
+                .whatwgUrlEncoding,
+                .product(
+                    name: "URLRouting",
+                    package: "swift-url-routing",
+                    condition: .when(traits: ["URLRouting"])
+                )
             ]
         ),
         .testTarget(
@@ -45,22 +53,14 @@ let package = Package(
             dependencies: [
                 .urlFormCoding
             ]
-        ),
-        .target(
-            name: .urlFormCodingURLRouting,
-            dependencies: [
-                .urlRouting,
-                .urlFormCoding
-            ]
-        ),
-        .testTarget(
-            name: .urlFormCodingURLRouting.tests,
-            dependencies: [
-                .urlFormCoding,
-                .urlFormCodingURLRouting
-            ]
         )
     ]
+)
+
+package.traits.insert(
+    .default(
+        enabledTraits: ["URLRouting"]
+    )
 )
 
 extension String { var tests: Self { self + " Tests" } }
